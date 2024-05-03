@@ -1,0 +1,139 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '/config/config.dart';
+import '/core/utils/utils.dart';
+import '/features/discovery/discovery.dart';
+import '/features/quote/quote.dart';
+
+class QuoteDetailBody extends ConsumerWidget {
+  const QuoteDetailBody({
+    super.key,
+    required this.quote,
+  });
+
+  final Quote quote;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textColor = context.colorScheme.onSurface;
+    final l10n = context.l10n;
+    final displayFavoriteIcon = quote.isFavorite == 1
+        ? FontAwesomeIcons.solidHeart
+        : FontAwesomeIcons.heart;
+
+    return Container(
+      margin: Dimensions.kPaddingAllLarge,
+      padding: Dimensions.kPaddingAllLarge,
+      decoration: BoxDecoration(
+        color: Color(quote.backgroundColor),
+        borderRadius: Dimensions.kBorderRadiusAllLarge,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FaIcon(
+            FontAwesomeIcons.quoteLeft,
+            size: Dimensions.iconSizeLarge,
+            color: textColor,
+          ),
+          Dimensions.kVerticalSpaceSmall,
+          Text(
+            quote.quoteText,
+            textAlign: AppHelpers.textAlignList[quote.textAlign],
+            style: TextStyle(
+              color: textColor,
+              fontSize: quote.fontSize,
+              fontWeight: AppHelpers.fontWeightList[quote.fontWeight],
+              wordSpacing: quote.wordSpacing,
+              letterSpacing: quote.letterSpacing,
+            ),
+          ),
+          Dimensions.kVerticalSpaceSmall,
+          Text(
+            '- ${quote.author}',
+            textAlign: AppHelpers.textAlignList[quote.textAlign],
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: textColor,
+            ),
+          ),
+          Dimensions.kVerticalSpaceLarge,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(
+                  displayFavoriteIcon,
+                  size: Dimensions.iconSizeLarge,
+                ),
+                color: textColor,
+                onPressed: () async {
+                  await ref
+                      .read(updateQuoteProvider.notifier)
+                      .updateFavorite(quote)
+                      .then((value) {
+                    _showSnackBar(context);
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.shareNodes,
+                  size: Dimensions.iconSizeLarge,
+                ),
+                color: textColor,
+                onPressed: () async {
+                  final quoteText = quote.quoteText;
+                  final quoteAuthor = quote.author;
+                  await AppHelpers.shareQuote(
+                    quoteText,
+                    quoteAuthor,
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.rss,
+                  size: Dimensions.iconSizeLarge,
+                ),
+                color: textColor,
+                onPressed: () async {
+                  ref.read(postQuoteProvider(quote));
+                  await AppAlerts.displaySnackbar(
+                    context,
+                    l10n.quotePostedSuccessfully,
+                    false,
+                  );
+                },
+              ),
+              IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.trashCan,
+                  size: Dimensions.iconSizeLarge,
+                ),
+                color: textColor,
+                onPressed: () async {
+                  final quoteId = AppHelpers.stringToInt('${quote.id}');
+                  await AppAlerts.showAlertDeleteDialog(
+                    context: context,
+                    ref: ref,
+                    quoteId: quoteId,
+                  );
+                },
+              ),
+            ],
+          ),
+        ].animate().slide().then().shake(),
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context) {
+    final l10n = context.l10n;
+    final String msg =
+        quote.isFavorite == 1 ? l10n.quoteRemovedFromFav : l10n.quoteAddedToFav;
+
+    AppAlerts.displaySnackbar(context, msg, true);
+  }
+}
