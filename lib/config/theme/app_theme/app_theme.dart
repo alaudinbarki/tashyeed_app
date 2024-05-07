@@ -8,7 +8,7 @@ part 'text_theme.dart';
 part 'quote_generator_colors.dart';
 
 @immutable
-class QuoteGeneratorTheme {
+class TashyeedTheme {
   static final lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,

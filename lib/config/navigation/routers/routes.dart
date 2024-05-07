@@ -53,6 +53,12 @@ final routes = [
   ),
 
   GoRoute(
+    path: RouteLocation.login,
+    parentNavigatorKey: navigationKey,
+    builder: LoginScreen.builder,
+  ),
+
+  GoRoute(
     path: RouteLocation.auth,
     parentNavigatorKey: navigationKey,
     builder: AuthScreen.builder,

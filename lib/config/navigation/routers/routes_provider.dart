@@ -20,9 +20,9 @@ final routerProvider = Provider<GoRouter>(
         final isAuth = authState.valueOrNull != null;
         final isSplash = state.uri.toString() == RouteLocation.splash;
         if (isSplash) {
-          return isAuth ? RouteLocation.createdByYou : RouteLocation.auth;
+          return isAuth ? RouteLocation.createdByYou : RouteLocation.login;
         }
-        final isLoggedIn = state.uri.toString() == RouteLocation.auth;
+        final isLoggedIn = state.uri.toString() == RouteLocation.login;
         if (isLoggedIn) return isAuth ? RouteLocation.createdByYou : null;
         return isAuth ? null : RouteLocation.splash;
       },
