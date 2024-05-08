@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,13 +22,10 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return Platform.isAndroid
-        ? const LoginMobile()
-        : const ResponsiveWidget(
-            desktop: LoginWeb(),
-            largeMobile: LoginMobile(),
-            mobile: LoginScreen(),
-            tablet: LoginWeb(),
-          );
+    return const ResponsiveWidget(
+      desktop: LoginWeb(),
+      mobile: LoginMobile(),
+      tablet: LoginWeb(),
+    );
   }
 }

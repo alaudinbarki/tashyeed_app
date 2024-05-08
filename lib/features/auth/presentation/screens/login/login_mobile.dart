@@ -69,9 +69,7 @@ class _LoginMobileState extends State<LoginMobile> {
                       fontWeight: FontWeight.w600,
                       color: Colors.black),
                 )),
-                SizedBox(
-                  height: deviceWidth * .05,
-                ),
+                SizedBox(height: deviceWidth * .05),
                 const Center(
                     child: Text(
                   "Hi There",
